@@ -24,5 +24,22 @@ namespace exercise.webapi.Repository
 
         }
 
+        public async Task<Book> UpdateBook(int id, int authorId)
+        {
+            Book book = await _db.Books.Where(b => b.Id == id).Include(book => book.Author).FirstOrDefaultAsync();
+            Author? author = _db.Authors.FirstOrDefault(author => author.Id == authorId);
+            if (author == null) 
+            {
+                return null;
+            }
+
+            book.AuthorId = authorId;
+            book.Author = author;
+
+            _db.SaveChangesAsync();
+
+            return book;
+
+        }
     }
 }
