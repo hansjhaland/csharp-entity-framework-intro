@@ -60,6 +60,11 @@ namespace exercise.webapi.Endpoints
         {
             var entity = await repository.GetBookById(id);
 
+            if (entity == null)
+            {
+                return TypedResults.NotFound();
+            }
+
             var authorGet = new BookAuthorGet();
             authorGet.FirstName = entity.Author.FirstName;
             authorGet.LastName = entity.Author.LastName;
