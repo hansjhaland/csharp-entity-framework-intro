@@ -2,6 +2,7 @@ using exercise.webapi.Data;
 using exercise.webapi.Endpoints;
 using exercise.webapi.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,16 +10,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("Library"));
+//builder.Services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("Library"));
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString"));
+    options.LogTo(message => Debug.WriteLine(message));
+});
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
 var app = builder.Build();
 
-using (var dbContext = new DataContext(new DbContextOptions<DataContext>()))
-{
-    dbContext.Database.EnsureCreated();
-}
+//using (var dbContext = new DataContext(new DbContextOptions<DataContext>()))
+//{
+//    dbContext.Database.EnsureCreated();
+//}
 
 
 // Configure the HTTP request pipeline.
