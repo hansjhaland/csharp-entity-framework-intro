@@ -18,9 +18,9 @@ namespace exercise.webapi.Repository
         }
 
  
-        public Task<Author> GetAuthorById(int id)
+        public async Task<Author> GetAuthorById(int id)
         {
-            throw new NotImplementedException();
+            return await _db.Authors.Where(a => a.Id == id).Include(a => a.Books).FirstOrDefaultAsync();
         }
     }
 }

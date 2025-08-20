@@ -9,7 +9,23 @@ namespace exercise.webapi.Endpoints
         public static void ConfigureAuthorsApi(this WebApplication app)
         {
             app.MapGet("/authors", GetAuthors);
-            //app.MapGet("/authors/{id}", GetAuthorsById);
+            app.MapGet("/authors/{id}", GetAuthorsById);
+        }
+
+        private static async Task<IResult> GetAuthorsById(IAuthorRepository repository, int id)
+        {
+            var entity = await repository.GetAuthorById(id);
+            if (entity == null) return TypedResults.NotFound();
+
+            var author = new AuthorGet();
+            author.FirstName = entity.FirstName;
+            author.LastName = entity.LastName;
+
+            foreach (var book in entity.Books) 
+            {
+                author.Books.Add(new AuthorBookGet() { Title = book.Title } );
+            }
+            return TypedResults.Ok(author);
         }
 
         private static async Task<IResult> GetAuthors(IAuthorRepository repository)
