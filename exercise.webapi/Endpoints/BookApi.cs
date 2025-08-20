@@ -44,7 +44,7 @@ namespace exercise.webapi.Endpoints
             {
                 return TypedResults.NotFound();
             }
-            var authorGet = new AuthorGet();
+            var authorGet = new BookAuthorGet();
             authorGet.FirstName = entity.Author.FirstName;
             authorGet.LastName = entity.Author.LastName;
             authorGet.Email = entity.Author.Email;
@@ -60,7 +60,7 @@ namespace exercise.webapi.Endpoints
         {
             var entity = await repository.GetBookById(id);
 
-            var authorGet = new AuthorGet();
+            var authorGet = new BookAuthorGet();
             authorGet.FirstName = entity.Author.FirstName;
             authorGet.LastName = entity.Author.LastName;
             authorGet.Email = entity.Author.Email;
@@ -78,7 +78,7 @@ namespace exercise.webapi.Endpoints
             var results = await bookRepository.GetAllBooks();
             foreach (Book book in results)
             {
-                var authorGet = new AuthorGet();
+                var authorGet = new BookAuthorGet();
                 authorGet.FirstName = book.Author.FirstName;
                 authorGet.LastName= book.Author.LastName;
                 authorGet.Email = book.Author.Email;
