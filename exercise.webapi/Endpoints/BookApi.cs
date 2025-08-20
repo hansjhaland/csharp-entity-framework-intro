@@ -12,9 +12,32 @@ namespace exercise.webapi.Endpoints
             app.MapGet("/books", GetBooks);
             app.MapGet("/books/{id}", GetBookById);
             app.MapPut("/books/{id}", UpdateBook);
+            app.MapDelete("/books/{id}", DeleteBook);
+            app.MapPost("/books", CreateBook);
         }
 
-        private static async Task<IResult> UpdateBook(IBookRepository repository, int id, int authorId)
+        private static async Task<IResult> CreateBook(IBookRepository repository, BookPost book)
+        {
+            var entity = await repository.CreateBook(book);
+            if (book.Title == "" || book.AuthorId == null) return TypedResults.BadRequest();
+            if (entity == null)
+            {
+                return TypedResults.NotFound();
+            }
+            return TypedResults.Created();
+        }
+
+        public static async Task<IResult> DeleteBook(IBookRepository repository, int id)
+        {
+            var entity = await repository.DeleteBook(id);
+            if (entity == null) 
+            {
+                return TypedResults.NotFound();
+            }
+            return TypedResults.Ok(entity);
+        }
+
+        public static async Task<IResult> UpdateBook(IBookRepository repository, int id, int authorId)
         {
             var entity = await repository.UpdateBook(id, authorId);
             if (entity == null)
@@ -33,7 +56,7 @@ namespace exercise.webapi.Endpoints
             return TypedResults.Ok(bookGet);
         }
 
-        private static async Task<IResult> GetBookById(IBookRepository repository, int id)
+        public static async Task<IResult> GetBookById(IBookRepository repository, int id)
         {
             var entity = await repository.GetBookById(id);
 
@@ -49,7 +72,7 @@ namespace exercise.webapi.Endpoints
             return TypedResults.Ok(bookGet);
         }
 
-        private static async Task<IResult> GetBooks(IBookRepository bookRepository)
+        public static async Task<IResult> GetBooks(IBookRepository bookRepository)
         {
             List<Object> response = new List<Object>();
             var results = await bookRepository.GetAllBooks();

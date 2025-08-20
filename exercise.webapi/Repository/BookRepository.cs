@@ -1,4 +1,5 @@
 ﻿using exercise.webapi.Data;
+using exercise.webapi.DTOs;
 using exercise.webapi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,36 @@ namespace exercise.webapi.Repository
 
             return book;
 
+        }
+
+        public async Task<Book> DeleteBook(int id)
+        {
+            var entity = await _db.Books.FindAsync(id);
+            if (entity == null)
+            {
+                return null;    
+            }
+            _db.Books.Remove(entity);
+            _db.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<Book> CreateBook(BookPost book)
+        {
+            var author = _db.Authors.FirstOrDefault(a => a.Id == book.AuthorId);
+            if (author == null)
+            {
+                return null;
+            }
+            var newBook = new Book();
+            newBook.Title = book.Title;
+            newBook.AuthorId = book.AuthorId;
+            newBook.Author = author;
+
+            _db.Books.Add(newBook);
+            await _db.SaveChangesAsync();
+
+            return newBook;
         }
     }
 }
