@@ -37,7 +37,7 @@ namespace exercise.webapi.Repository
             book.AuthorId = authorId;
             book.Author = author;
 
-            _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
 
             return book;
 
@@ -51,7 +51,7 @@ namespace exercise.webapi.Repository
                 return null;    
             }
             _db.Books.Remove(entity);
-            _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
             return entity;
         }
 
